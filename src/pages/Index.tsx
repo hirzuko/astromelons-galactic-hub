@@ -48,7 +48,7 @@ const Index = () => {
             {/* Footer */}
             <footer className="text-center py-8 border-t border-border/30">
               <p className="text-muted-foreground font-exo text-sm">
-                © 2024 Astromelons Community. All rights reserved.
+                © 2026 Astromelons Community. All rights reserved.
               </p>
               <p className="text-muted-foreground/60 font-exo text-xs mt-2">
                 Made with 💜 for the cosmos
