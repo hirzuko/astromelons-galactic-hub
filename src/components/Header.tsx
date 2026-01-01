@@ -9,19 +9,19 @@ const Header = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="relative z-10 py-8 px-6"
     >
-      <div className="container mx-auto flex items-center justify-center gap-4">
-        {/* Logo placeholder */}
+      <div className="container mx-auto relative">
+        {/* Logo - Top Left */}
         <motion.div
           whileHover={{ scale: 1.1, rotate: 10 }}
-          className="relative"
+          className="absolute left-0 top-1/2 -translate-y-1/2"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center neon-border">
-            <Rocket className="w-8 h-8 text-foreground" />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center neon-border">
+            <Rocket className="w-7 h-7 text-foreground" />
           </div>
           <div className="absolute -inset-1 bg-gradient-to-br from-primary to-accent rounded-2xl blur-lg opacity-50 -z-10" />
         </motion.div>
 
-        {/* Title */}
+        {/* Title - Centered */}
         <div className="text-center">
           <motion.h1
             className="text-5xl md:text-7xl font-orbitron font-bold tracking-wider"

@@ -5,16 +5,16 @@ import ServerCard from "@/components/ServerCard";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import VideoGallery from "@/components/VideoGallery";
 import SocialButtons from "@/components/SocialButtons";
-import { Pickaxe, Rocket } from "lucide-react";
+import { Pickaxe } from "lucide-react";
 
 const Index = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Astromelons | Minecraft & Astroneer Gaming Community</title>
+        <title>Astromelons | Minecraft Gaming Community</title>
         <meta
           name="description"
-          content="Join Astromelons, an immersive gaming community for Minecraft and Astroneer. Explore, survive, and thrive with fellow space explorers."
+          content="Join Astromelons, an immersive Minecraft gaming community. Explore, survive, and thrive with fellow explorers."
         />
       </Helmet>
 
@@ -25,27 +25,14 @@ const Index = () => {
           <Header />
 
           <main className="container mx-auto px-4 py-8 space-y-12">
-            {/* Server Cards Section */}
-            <section className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* Server Card Section */}
+            <section className="max-w-md mx-auto">
               <ServerCard
                 title="Minecraft Server"
                 icon={Pickaxe}
-                status="online"
-                ip="play.astromelons.com"
+                ip="womanly-running.gl.joinmc.link"
                 description="Explore our custom survival world with unique plugins, events, and an amazing community. Build, mine, and create together!"
-                playerCount={47}
-                maxPlayers={100}
                 delay={0.2}
-              />
-              <ServerCard
-                title="Astroneer Server"
-                icon={Rocket}
-                status="online"
-                ip="astro.astromelons.com:8766"
-                description="Join our dedicated Astroneer server for co-op space exploration. Discover new planets and build bases with friends!"
-                playerCount={12}
-                maxPlayers={24}
-                delay={0.3}
               />
             </section>
 
