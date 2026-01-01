@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle, Users } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 const SocialButtons = () => {
   return (
@@ -18,7 +18,7 @@ const SocialButtons = () => {
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <div className="flex items-center justify-center">
         {/* Discord Button */}
         <motion.a
           href="https://discord.gg/astromelons"
@@ -38,18 +38,6 @@ const SocialButtons = () => {
           <span className="relative z-10">JOIN DISCORD</span>
           <div className="absolute -inset-1 bg-[#5865F2] blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300 -z-10" />
         </motion.a>
-
-        {/* Member count badge */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="glass-card px-6 py-3 flex items-center gap-3"
-        >
-          <Users className="w-5 h-5 text-accent" />
-          <div className="text-left">
-            <p className="font-orbitron text-lg font-bold text-foreground">1,247</p>
-            <p className="text-xs text-muted-foreground font-exo">Members Online</p>
-          </div>
-        </motion.div>
       </div>
     </motion.section>
   );
