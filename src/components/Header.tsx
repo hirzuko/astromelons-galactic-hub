@@ -13,7 +13,7 @@ const Header = () => {
         {/* Logo - Top Left */}
         <motion.div
           whileHover={{ scale: 1.1, rotate: 10 }}
-          className="absolute left-0 top-1/2 -translate-y-1/2"
+          className="absolute left-0 top-0"
         >
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center neon-border">
             <Rocket className="w-7 h-7 text-foreground" />
