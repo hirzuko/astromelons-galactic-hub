@@ -8,15 +8,15 @@ const videos = [
   {
     id: 1,
     title: "Server Launch Trailer",
-    thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80",
-    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+    thumbnail: "/videos/server-launch-thumb.jpg",
+    videoUrl: "/videos/server-launch.mp4",
     duration: "2:34",
   },
   {
     id: 2,
     title: "Community Highlights",
-    thumbnail: "https://images.unsplash.com/photo-1462332420958-a05d1e002413?w=400&q=80",
-    videoUrl: "https://www.w3schools.com/html/movie.mp4",
+    thumbnail: "/videos/community-highlights-thumb.jpg",
+    videoUrl: "/videos/community-highlights.mp4",
     duration: "5:12",
   },
 ];
