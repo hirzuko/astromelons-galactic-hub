@@ -10,17 +10,6 @@ const Header = () => {
       className="relative z-10 py-8 px-6"
     >
       <div className="container mx-auto relative">
-        {/* Logo - Top Left */}
-        <motion.div
-          whileHover={{ scale: 1.1, rotate: 10 }}
-          className="absolute left-0 top-0"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center neon-border">
-            <Rocket className="w-7 h-7 text-foreground" />
-          </div>
-          <div className="absolute -inset-1 bg-gradient-to-br from-primary to-accent rounded-2xl blur-lg opacity-50 -z-10" />
-        </motion.div>
-
         {/* Title - Centered */}
         <div className="text-center">
           <motion.h1
