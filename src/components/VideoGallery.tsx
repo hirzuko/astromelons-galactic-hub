@@ -1,25 +1,20 @@
 import { motion } from "framer-motion";
 import FloatingWindow from "./FloatingWindow";
-import { Play, Video as VideoIcon, ImageOff } from "lucide-react";
-import { useState } from "react";
+import { Play, Video as VideoIcon, ImageOff, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 
-// Dynamic video data - add new entries here and they automatically appear
-const videos = [
-  {
-    id: 1,
-    title: "Server Launch Trailer",
-    thumbnail: "/videos/server-launch-thumb.jpg",
-    videoUrl: "/videos/server-launch.mp4",
-    duration: "2:34",
-  },
-  {
-    id: 2,
-    title: "Community Highlights",
-    thumbnail: "/videos/community-highlights-thumb.jpg",
-    videoUrl: "/videos/community-highlights.mp4",
-    duration: "5:12",
-  },
-];
+interface Video {
+  id: string;
+  filename: string;
+  thumbnail: string;
+  title: string;
+  duration: string;
+}
+
+// Cache busting helper - appends timestamp to bypass browser cache
+const getCacheBustedUrl = (path: string) => {
+  return `${path}?v=${Date.now()}`;
+};
 
 const ThumbnailWithFallback = ({ src, alt, className }: { src: string; alt: string; className?: string }) => {
   const [error, setError] = useState(false);
@@ -29,7 +24,7 @@ const ThumbnailWithFallback = ({ src, alt, className }: { src: string; alt: stri
       <div className={`${className} bg-card/50 flex items-center justify-center`}>
         <div className="text-center text-muted-foreground p-2">
           <ImageOff className="w-6 h-6 mx-auto mb-1" />
-          <span className="text-[10px] leading-tight block">Add to public{src}</span>
+          <span className="text-[10px] leading-tight block">Thumbnail not found</span>
         </div>
       </div>
     );
@@ -46,14 +41,67 @@ const ThumbnailWithFallback = ({ src, alt, className }: { src: string; alt: stri
 };
 
 const VideoGallery = () => {
-  const [playingVideo, setPlayingVideo] = useState<typeof videos[0] | null>(null);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [playingVideo, setPlayingVideo] = useState<Video | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchManifest = async () => {
+      try {
+        setLoading(true);
+        // Fetch manifest with cache busting
+        const response = await fetch(getCacheBustedUrl('./manifest.json'));
+        if (!response.ok) {
+          throw new Error('Failed to load manifest');
+        }
+        const data = await response.json();
+        setVideos(data.videos || []);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading manifest:', err);
+        setError('Failed to load videos');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchManifest();
+  }, []);
+
+  const getThumbnailUrl = (thumbnail: string) => {
+    return getCacheBustedUrl(`./videos/${thumbnail}`);
+  };
+
+  const getVideoUrl = (filename: string) => {
+    return getCacheBustedUrl(`./videos/${filename}`);
+  };
+
   return (
     <>
       <FloatingWindow title="media.player" delay={0.6}>
-        {videos.length === 0 ? (
+        <div className="flex items-center gap-2 mb-4">
+          <VideoIcon className="w-4 h-4 text-primary" />
+          <span className="text-sm text-muted-foreground font-mono">
+            videos.stream() — {videos.length} items
+          </span>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+            <span className="ml-2 text-muted-foreground">Loading videos...</span>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <VideoIcon className="w-8 h-8 mx-auto mb-2" />
+            <p>{error}</p>
+          </div>
+        ) : videos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
             <VideoIcon className="w-12 h-12 mb-4 opacity-50" />
             <p className="font-exo">No videos available</p>
+            <p className="text-xs mt-1">Add entries to manifest.json</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -68,7 +116,7 @@ const VideoGallery = () => {
                 className="relative aspect-video rounded-xl overflow-hidden cursor-pointer group border border-border/30"
               >
                 <ThumbnailWithFallback
-                  src={video.thumbnail}
+                  src={getThumbnailUrl(video.thumbnail)}
                   alt={video.title}
                   className="w-full h-full object-cover"
                 />
@@ -120,13 +168,14 @@ const VideoGallery = () => {
             className="relative w-full max-w-4xl rounded-2xl overflow-hidden border border-border/50 neon-border"
           >
             <video
-              src={playingVideo.videoUrl}
+              src={getVideoUrl(playingVideo.filename)}
               controls
               autoPlay
               className="w-full aspect-video bg-background"
             />
             <div className="p-4 bg-card border-t border-border/30">
               <h3 className="font-orbitron text-foreground">{playingVideo.title}</h3>
+              <p className="text-sm text-muted-foreground">Duration: {playingVideo.duration}</p>
             </div>
           </motion.div>
         </motion.div>
