@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import FloatingWindow from "./FloatingWindow";
-import { Play, Video as VideoIcon } from "lucide-react";
+import { Play, Video as VideoIcon, ImageOff } from "lucide-react";
 import { useState } from "react";
 
 // Dynamic video data - add new entries here and they automatically appear
@@ -21,9 +21,32 @@ const videos = [
   },
 ];
 
+const ThumbnailWithFallback = ({ src, alt, className }: { src: string; alt: string; className?: string }) => {
+  const [error, setError] = useState(false);
+  
+  if (error) {
+    return (
+      <div className={`${className} bg-card/50 flex items-center justify-center`}>
+        <div className="text-center text-muted-foreground p-2">
+          <ImageOff className="w-6 h-6 mx-auto mb-1" />
+          <span className="text-[10px] leading-tight block">Add to public{src}</span>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={() => setError(true)}
+    />
+  );
+};
+
 const VideoGallery = () => {
   const [playingVideo, setPlayingVideo] = useState<typeof videos[0] | null>(null);
-
   return (
     <>
       <FloatingWindow title="media.player" delay={0.6}>
@@ -44,7 +67,7 @@ const VideoGallery = () => {
                 onClick={() => setPlayingVideo(video)}
                 className="relative aspect-video rounded-xl overflow-hidden cursor-pointer group border border-border/30"
               >
-                <img
+                <ThumbnailWithFallback
                   src={video.thumbnail}
                   alt={video.title}
                   className="w-full h-full object-cover"

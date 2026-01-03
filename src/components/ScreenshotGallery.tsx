@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import FloatingWindow from "./FloatingWindow";
-import { Image as ImageIcon, ExternalLink } from "lucide-react";
+import { Image as ImageIcon, ExternalLink, ImageOff } from "lucide-react";
 import { useState } from "react";
 
 // Dynamic screenshot data - add new entries here and they automatically appear
@@ -43,9 +43,32 @@ const screenshots = [
   },
 ];
 
+const ImageWithFallback = ({ src, alt, className }: { src: string; alt: string; className?: string }) => {
+  const [error, setError] = useState(false);
+  
+  if (error) {
+    return (
+      <div className={`${className} bg-card/50 flex items-center justify-center`}>
+        <div className="text-center text-muted-foreground p-2">
+          <ImageOff className="w-6 h-6 mx-auto mb-1" />
+          <span className="text-[10px] leading-tight block">Add to public{src}</span>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={() => setError(true)}
+    />
+  );
+};
+
 const ScreenshotGallery = () => {
   const [selectedImage, setSelectedImage] = useState<typeof screenshots[0] | null>(null);
-
   return (
     <>
       <FloatingWindow title="screenshots.gallery" delay={0.4}>
@@ -66,7 +89,7 @@ const ScreenshotGallery = () => {
                 onClick={() => setSelectedImage(screenshot)}
                 className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group border border-border/30"
               >
-                <img
+                <ImageWithFallback
                   src={screenshot.thumbnail}
                   alt={screenshot.title}
                   className="w-full h-full object-cover"
@@ -101,7 +124,7 @@ const ScreenshotGallery = () => {
             transition={{ duration: 0.3 }}
             className="relative max-w-4xl max-h-[80vh] rounded-2xl overflow-hidden border border-border/50 neon-border"
           >
-            <img
+            <ImageWithFallback
               src={selectedImage.fullsize}
               alt={selectedImage.title}
               className="w-full h-full object-contain"
