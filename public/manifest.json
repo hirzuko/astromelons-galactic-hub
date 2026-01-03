@@ -1,0 +1,63 @@
+{
+  "screenshots": [
+    {
+      "id": "1",
+      "filename": "screenshot1.png",
+      "title": "Epic Build",
+      "description": "Amazing architectural masterpiece"
+    },
+    {
+      "id": "2",
+      "filename": "screenshot2.png",
+      "title": "Sunset View",
+      "description": "Beautiful evening on the server"
+    },
+    {
+      "id": "3",
+      "filename": "screenshot3.png",
+      "title": "Community Event",
+      "description": "Players gathered for a special event"
+    },
+    {
+      "id": "4",
+      "filename": "screenshot4.png",
+      "title": "Adventure Time",
+      "description": "Exploring the vast world"
+    },
+    {
+      "id": "5",
+      "filename": "screenshot5.png",
+      "title": "Castle Siege",
+      "description": "Epic battle at the fortress"
+    },
+    {
+      "id": "6",
+      "filename": "screenshot6.png",
+      "title": "Night Sky",
+      "description": "Stars over the main hub"
+    }
+  ],
+  "videos": [
+    {
+      "id": "1",
+      "filename": "video1.mp4",
+      "thumbnail": "thumb1.jpg",
+      "title": "Server Trailer",
+      "duration": "2:45"
+    },
+    {
+      "id": "2",
+      "filename": "video2.mp4",
+      "thumbnail": "thumb2.jpg",
+      "title": "Build Timelapse",
+      "duration": "5:30"
+    },
+    {
+      "id": "3",
+      "filename": "video3.mp4",
+      "thumbnail": "thumb3.jpg",
+      "title": "PvP Highlights",
+      "duration": "3:15"
+    }
+  ]
+}
