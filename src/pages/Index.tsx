@@ -18,13 +18,13 @@ const Index = () => {
         />
       </Helmet>
 
-      <div className="min-h-screen relative overflow-hidden">
+      <div className="min-h-screen relative overflow-x-hidden max-w-[100vw]">
         <StarfieldBackground />
 
-        <div className="relative z-10">
+        <div className="relative z-10 w-full max-w-[100vw] overflow-x-hidden">
           <Header />
 
-          <main className="container mx-auto px-4 py-8 space-y-12">
+          <main className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 space-y-8 sm:space-y-12">
             {/* Server Card Section */}
             <section className="max-w-md mx-auto">
               <ServerCard

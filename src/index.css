@@ -103,12 +103,21 @@
     @apply border-border;
   }
 
-  body {
+  html, body {
     @apply bg-background text-foreground font-exo antialiased;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-orbitron;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Utility for text wrapping */
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
   }
 }
 
