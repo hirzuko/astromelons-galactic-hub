@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { Rocket } from "lucide-react";
 
 const Header = () => {
   return (
@@ -7,13 +6,14 @@ const Header = () => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="relative z-10 py-8 px-6"
+      className="relative z-10 py-8 px-4 w-full overflow-hidden"
     >
-      <div className="container mx-auto relative">
-        {/* Title - Centered */}
-        <div className="text-center">
+      <div className="w-full max-w-full mx-auto">
+        {/* Title - Perfectly Centered */}
+        <div className="w-full text-center mx-auto">
           <motion.h1
-            className="text-5xl md:text-7xl font-orbitron font-bold tracking-wider"
+            className="text-[clamp(1.75rem,8vw,4.5rem)] font-orbitron font-bold tracking-wider w-full break-words overflow-wrap-anywhere"
+            style={{ textWrap: 'balance' }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
@@ -25,7 +25,7 @@ const Header = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-muted-foreground font-exo text-lg tracking-widest mt-2"
+            className="text-muted-foreground font-exo text-sm sm:text-base md:text-lg tracking-widest mt-2 break-words"
           >
             EXPLORE • SURVIVE • THRIVE
           </motion.p>
