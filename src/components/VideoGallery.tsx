@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import FloatingWindow from "./FloatingWindow";
-import { Play, Video as VideoIcon, ImageOff, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Play, Video as VideoIcon, ImageOff, Loader2, X } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface Video {
   id: string;
@@ -9,6 +9,11 @@ interface Video {
   thumbnail: string;
   title: string;
   duration: string;
+}
+
+interface VideoDimensions {
+  width: number;
+  height: number;
 }
 
 // Cache busting helper - appends timestamp to bypass browser cache
@@ -43,8 +48,10 @@ const ThumbnailWithFallback = ({ src, alt, className }: { src: string; alt: stri
 const VideoGallery = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [playingVideo, setPlayingVideo] = useState<Video | null>(null);
+  const [videoDimensions, setVideoDimensions] = useState<VideoDimensions | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const fetchManifest = async () => {
@@ -75,6 +82,54 @@ const VideoGallery = () => {
 
   const getVideoUrl = (filename: string) => {
     return getCacheBustedUrl(`./videos/${filename}`);
+  };
+
+  const handleVideoSelect = useCallback((video: Video) => {
+    setVideoDimensions(null);
+    setPlayingVideo(video);
+  }, []);
+
+  const handleVideoMetadata = useCallback(() => {
+    if (videoRef.current) {
+      setVideoDimensions({
+        width: videoRef.current.videoWidth,
+        height: videoRef.current.videoHeight
+      });
+    }
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setPlayingVideo(null);
+    setVideoDimensions(null);
+  }, []);
+
+  // Calculate modal dimensions based on video aspect ratio
+  const getModalStyle = () => {
+    if (!videoDimensions) {
+      return { maxWidth: '90vw', maxHeight: '90vh' };
+    }
+    
+    const aspectRatio = videoDimensions.width / videoDimensions.height;
+    const maxW = window.innerWidth * 0.9;
+    const maxH = window.innerHeight * 0.85; // Leave room for info bar
+    
+    let width, height;
+    
+    if (aspectRatio > maxW / maxH) {
+      // Video is wider than viewport ratio
+      width = Math.min(videoDimensions.width, maxW);
+      height = width / aspectRatio;
+    } else {
+      // Video is taller than viewport ratio
+      height = Math.min(videoDimensions.height, maxH);
+      width = height * aspectRatio;
+    }
+    
+    return {
+      width: `${width}px`,
+      maxWidth: '90vw',
+      maxHeight: '90vh'
+    };
   };
 
   return (
@@ -112,7 +167,7 @@ const VideoGallery = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 + index * 0.15, duration: 0.4 }}
                 whileHover={{ scale: 1.02 }}
-                onClick={() => setPlayingVideo(video)}
+                onClick={() => handleVideoSelect(video)}
                 className="relative aspect-video rounded-xl overflow-hidden cursor-pointer group border border-border/30"
               >
                 <ThumbnailWithFallback
@@ -151,35 +206,69 @@ const VideoGallery = () => {
         )}
       </FloatingWindow>
 
-      {/* Video Player Modal */}
-      {playingVideo && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setPlayingVideo(null)}
-          className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md flex items-center justify-center p-4"
-        >
+      {/* Adaptive Video Player Modal */}
+      <AnimatePresence>
+        {playingVideo && (
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-4xl rounded-2xl overflow-hidden border border-border/50 neon-border"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleClose}
+            className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex items-center justify-center p-4"
           >
-            <video
-              src={getVideoUrl(playingVideo.filename)}
-              controls
-              autoPlay
-              className="w-full aspect-video bg-background"
-            />
-            <div className="p-4 bg-card border-t border-border/30">
-              <h3 className="font-orbitron text-foreground">{playingVideo.title}</h3>
-              <p className="text-sm text-muted-foreground">Duration: {playingVideo.duration}</p>
-            </div>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ 
+                scale: 1, 
+                opacity: 1,
+                ...getModalStyle()
+              }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ 
+                type: "spring",
+                stiffness: 300,
+                damping: 30
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative rounded-2xl overflow-hidden border border-border/50 bg-card/30 backdrop-blur-xl shadow-2xl"
+              style={{ boxShadow: '0 0 40px rgba(0, 212, 255, 0.15)' }}
+            >
+              {/* Close button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                onClick={handleClose}
+                className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground hover:bg-background/80 hover:text-primary transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </motion.button>
+
+              {/* Video */}
+              <video
+                ref={videoRef}
+                src={getVideoUrl(playingVideo.filename)}
+                controls
+                autoPlay
+                onLoadedMetadata={handleVideoMetadata}
+                className="w-full h-auto object-contain bg-background"
+                style={{ maxHeight: 'calc(90vh - 80px)' }}
+              />
+
+              {/* Info bar */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="p-4 bg-card/60 backdrop-blur-sm border-t border-border/30"
+              >
+                <h3 className="font-orbitron text-foreground">{playingVideo.title}</h3>
+                <p className="text-sm text-muted-foreground">Duration: {playingVideo.duration}</p>
+              </motion.div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </>
   );
 };
