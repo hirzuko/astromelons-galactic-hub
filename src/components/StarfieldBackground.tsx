@@ -8,17 +8,20 @@ interface Star {
   duration: number;
   delay: number;
   opacity: number;
+  trailLength: number;
 }
 
 const StarfieldBackground = () => {
+  // Diagonal falling stars (top-right to bottom-left)
   const stars = useMemo<Star[]>(() => {
-    return Array.from({ length: 60 }, (_, i) => ({
+    return Array.from({ length: 50 }, (_, i) => ({
       id: i,
-      x: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      duration: Math.random() * 15 + 10,
-      delay: Math.random() * 20,
-      opacity: Math.random() * 0.7 + 0.3,
+      x: Math.random() * 100 + 20, // Start more to the right
+      size: Math.random() * 2 + 1,
+      duration: Math.random() * 12 + 8,
+      delay: Math.random() * 15,
+      opacity: Math.random() * 0.8 + 0.2,
+      trailLength: Math.random() * 40 + 20, // Trail length
     }));
   }, []);
 
@@ -71,21 +74,26 @@ const StarfieldBackground = () => {
         />
       ))}
 
-      {/* Falling stars */}
+      {/* Diagonal falling stars with trails (top-right to bottom-left) */}
       {stars.map((star) => (
         <motion.div
           key={`fall-${star.id}`}
-          className="absolute rounded-full"
+          className="absolute"
           style={{
             left: `${star.x}%`,
             width: star.size,
-            height: star.size,
-            background: `linear-gradient(180deg, hsl(186, 100%, 80%), hsl(210, 100%, 60%))`,
-            boxShadow: `0 0 ${star.size * 2}px hsla(186, 100%, 50%, 0.6)`,
+            height: star.trailLength,
+            transformOrigin: 'top center',
+            transform: 'rotate(-45deg)', // Diagonal angle
           }}
-          initial={{ y: "-10vh", opacity: 0 }}
+          initial={{ 
+            x: "20vw",
+            y: "-15vh", 
+            opacity: 0 
+          }}
           animate={{
-            y: "110vh",
+            x: "-120vw",
+            y: "120vh",
             opacity: [0, star.opacity, star.opacity, 0],
           }}
           transition={{
@@ -94,7 +102,33 @@ const StarfieldBackground = () => {
             delay: star.delay,
             ease: "linear",
           }}
-        />
+        >
+          {/* Star head (bright point) */}
+          <div 
+            className="absolute top-0 left-0 rounded-full"
+            style={{
+              width: star.size,
+              height: star.size,
+              background: `radial-gradient(circle, hsl(186, 100%, 90%) 0%, hsl(186, 100%, 70%) 50%, transparent 100%)`,
+              boxShadow: `0 0 ${star.size * 4}px hsla(186, 100%, 70%, 0.9), 0 0 ${star.size * 8}px hsla(186, 100%, 50%, 0.5)`,
+            }}
+          />
+          {/* Trail effect */}
+          <div 
+            className="absolute top-0 left-1/2 -translate-x-1/2"
+            style={{
+              width: star.size * 0.5,
+              height: star.trailLength,
+              background: `linear-gradient(180deg, 
+                hsla(186, 100%, 80%, 0.8) 0%, 
+                hsla(210, 100%, 60%, 0.4) 30%,
+                hsla(210, 100%, 50%, 0.1) 70%,
+                transparent 100%
+              )`,
+              filter: `blur(${star.size * 0.3}px)`,
+            }}
+          />
+        </motion.div>
       ))}
 
       {/* Nebula overlay */}

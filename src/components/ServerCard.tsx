@@ -34,32 +34,32 @@ const ServerCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.6, ease: "easeOut" }}
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
-      className="glass-card-hover p-6 flex flex-col gap-4"
+      className="glass-card-hover p-4 sm:p-6 flex flex-col gap-3 sm:gap-4 w-full max-w-full overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center border border-border/50">
-          <Icon className="w-6 h-6 text-accent" />
+        <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center border border-border/50">
+          <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
         </div>
-        <h3 className="font-orbitron font-semibold text-xl text-foreground">
+        <h3 className="font-orbitron font-semibold text-lg sm:text-xl text-foreground break-words">
           {title}
         </h3>
       </div>
 
       {/* Description */}
-      <p className="text-muted-foreground font-exo text-sm leading-relaxed">
+      <p className="text-muted-foreground font-exo text-sm leading-relaxed break-words">
         {description}
       </p>
 
       {/* IP Address */}
       {ip && (
-        <div className="flex items-center gap-2 bg-secondary/50 rounded-lg px-4 py-3 border border-border/30">
-          <code className="flex-1 text-accent font-mono text-sm">{ip}</code>
+        <div className="flex items-center gap-2 bg-secondary/50 rounded-lg px-3 sm:px-4 py-2 sm:py-3 border border-border/30 w-full min-w-0">
+          <code className="flex-1 text-accent font-mono text-xs sm:text-sm break-all overflow-wrap-anywhere min-w-0">{ip}</code>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleCopy}
-            className="p-2 rounded-lg hover:bg-accent/10 transition-colors"
+            className="p-2 rounded-lg hover:bg-accent/10 transition-colors flex-shrink-0"
           >
             {copied ? (
               <CheckCircle2 className="w-4 h-4 text-green-500" />
